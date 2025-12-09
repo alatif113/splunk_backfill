@@ -1,0 +1,121 @@
+<form version="1.1" theme="dark" script="backfill.js">
+  <label>Test</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="member_firm">
+      <label>Member Firm</label>
+      <choice value="Deployment">Deployment</choice>
+    </input>
+    <input type="time" token="event_time">
+      <label>Event Time</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="time" token="index_time">
+      <label>Index Time</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="text" token="field1">
+      <label>field1</label>
+    </input>
+  </fieldset>
+  <row>
+    <panel id="dashboardPanel">
+      <input id="pri_checkboxes" type="checkbox" token="pris">
+        <label></label>
+        <fieldForLabel>title</fieldForLabel>
+        <fieldForValue>title</fieldForValue>
+        <search>
+          <query>| rest /servicesNS/admin/search/saved/searches
+| search title!=*Backfill
+| table title
+| head $field1$</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <delimiter> , </delimiter>
+        <valuePrefix>"</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+      </input>
+      <html>
+        <style>
+          #dashboardPanel .dashboard-panel {
+            display: flex;
+            flex-direction: column-reverse;
+          }
+          #pri_checkboxes {
+            display: block;
+            width: 100%;
+          }
+          div[data-test="switch"] {
+            min-height: 64px;
+            padding: 12px;
+            align-items: center;
+          }
+          div[data-test="switch"]:nth-child(odd) {
+            background: #2b3033;
+          }
+          div[data-test="switch"] button {
+            flex: none;
+          }
+          div[data-test="switch"] label {
+            flex: 1;
+            max-width: 600px;
+          }
+          .status-message {
+            flex: 1;
+          }
+          .status-message::before {
+            display: inline-block;
+            font-family: IconViewFont;
+            font-style: normal;
+            font-weight: 400;
+            text-decoration: none;
+            font-size: 2em;
+            vertical-align: middle;
+            margin-right: 10px;
+          }
+          .status-message.error::before {
+            content: "\ECE2";
+            color: #dc4e41;
+          }
+          .status-message.in-progress::before {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            -webkit-animation: spin 1s ease-in-out infinite;
+            box-sizing: border-box;
+          }  
+          .status-message.done::before {
+            content: "\ECD3";
+            color: #53a051;
+          }
+          .btn-container .btn {
+            margin-left: 5px;
+          }
+          @keyframes spin {
+            to { -webkit-transform: rotate(360deg); }
+          }
+          @-webkit-keyframes spin {
+            to { -webkit-transform: rotate(360deg); }
+          }
+        </style>
+        <div class="btn-container">
+          <a class="btn btn-select-all">Select All</a>
+          <a class="btn btn-deselect-all">Deselect All</a>
+          <a class="btn btn-primary btn-create-backfill-searches">Create Backfill Searches!</a>
+        </div>
+        <span class="status"/>
+        <span class="message"/>
+      </html>
+    </panel>
+  </row>
+</form>
